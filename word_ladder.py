@@ -16,12 +16,14 @@ def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
     ```
     may give the output
     ```
-    ['stone', 'shone', 'phone', 'phony', 'peony', 'penny', 'benny', 'bonny', 'boney', 'money']
+    ['stone', 'shone', 'phone', 'phony', 'peony',\
+    'penny', 'benny', 'bonny', 'boney', 'money']
     ```
     but the possible outputs are not unique,
     so you may also get the output
     ```
-    ['stone', 'shone', 'shote', 'shots', 'soots', 'hoots', 'hooty', 'hooey', 'honey', 'money']
+    ['stone', 'shone', 'shote', 'shots', 'soots',\
+    'hoots', 'hooty', 'hooey', 'honey', 'money']
     ```
     (We cannot use doctests here because the outputs are not unique.)
 
@@ -52,3 +54,27 @@ def _adjacent(word1, word2):
     >>> _adjacent('stone','money')
     False
     '''
+    word1_counter = {}
+    word2_counter = {}
+    for i in range(len(word1)):
+        if word1[i] in word1_counter:
+            word1_counter[word1[i]] += 1
+        else:
+            word1_counter[word1[i]] = 1
+    for i in range(len(word2)):
+        if word2[i] in word2_counter:
+            word2_counter[word2[i]] += 1
+        else:
+            word2_counter[word2[i]] = 1
+    differ_counter = 0
+    for key in word1_counter:
+        # print("word1_counter[key]", word1_counter[key])
+        # print("word2_counter[key]", word2_counter[key])
+        if key not in word2_counter:
+            differ_counter += 1
+        elif word1_counter[key] != word2_counter[key]:
+            differ_counter += abs(word1_counter[key]-word2_counter[key])
+    if differ_counter <= 1:
+        return True
+    else:
+        return False
