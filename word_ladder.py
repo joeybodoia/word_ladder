@@ -73,7 +73,7 @@ def _adjacent(word1, word2):
         if key not in word2_counter:
             differ_counter += 1
         elif word1_counter[key] != word2_counter[key]:
-            differ_counter += abs(word1_counter[key]-word2_counter[key])
+            differ_counter += abs(word1_counter[key] -  word2_counter[key])
     if differ_counter <= 1:
         return True
     else:
