@@ -1,5 +1,8 @@
 #!/bin/python3
 
+from collections import deque
+from copy import deepcopy
+
 
 def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
     '''
@@ -30,6 +33,26 @@ def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
     Whenever it is impossible to generate a word ladder between the two words,
     the function returns `None`.
     '''
+    word_stack = []
+    word_stack.append(start_word)
+    if start_word == end_word:
+        return word_stack
+    word_queue = deque([])
+    word_queue.append(word_stack)
+    with open('words5.dict') as f:
+        words = f.readlines()
+        words = list([word.strip() for word in words])
+    while len(word_queue) != 0:
+        word_stack = word_queue.popleft()
+        for word in words:
+            if _adjacent(word_stack[-1], word):
+                if word == end_word:
+                    word_stack.append(word)
+                    return word_stack
+                copy_stack = deepcopy(word_stack)
+                copy_stack.append(word)
+                word_queue.append(copy_stack)
+                words.remove(word)
 
 
 def verify_word_ladder(ladder):
@@ -42,6 +65,12 @@ def verify_word_ladder(ladder):
     >>> verify_word_ladder(['stone', 'shone', 'phony'])
     False
     '''
+    if len(ladder) == 0:
+        return False
+    for i in range(len(ladder)-1):
+        if not _adjacent(ladder[i], ladder[i+1]):
+            return False
+    return True
 
 
 def _adjacent(word1, word2):
@@ -54,27 +83,10 @@ def _adjacent(word1, word2):
     >>> _adjacent('stone','money')
     False
     '''
-    word1_counter = {}
-    word2_counter = {}
-    for i in range(len(word1)):
-        if word1[i] in word1_counter:
-            word1_counter[word1[i]] += 1
-        else:
-            word1_counter[word1[i]] = 1
-    for i in range(len(word2)):
-        if word2[i] in word2_counter:
-            word2_counter[word2[i]] += 1
-        else:
-            word2_counter[word2[i]] = 1
-    differ_counter = 0
-    for key in word1_counter:
-        # print("word1_counter[key]", word1_counter[key])
-        # print("word2_counter[key]", word2_counter[key])
-        if key not in word2_counter:
-            differ_counter += 1
-        elif word1_counter[key] != word2_counter[key]:
-            differ_counter += abs(word1_counter[key] -  word2_counter[key])
-    if differ_counter <= 1:
-        return True
-    else:
+    if len(word1) != len(word2):
         return False
+    differ_counter = 0
+    for i in range(len(word1)):
+        if word1[i] != word2[i]:
+            differ_counter += 1
+    return differ_counter == 1
