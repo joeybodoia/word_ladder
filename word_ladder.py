@@ -1,7 +1,7 @@
 #!/bin/python3
 
 from collections import deque
-from copy import deepcopy
+import copy
 
 
 def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
@@ -44,12 +44,13 @@ def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
         words = list([word.strip() for word in words])
     while len(word_queue) != 0:
         word_stack = word_queue.popleft()
-        for word in words:
+        words_copy = copy.copy(words)
+        for word in words_copy:
             if _adjacent(word_stack[-1], word):
                 if word == end_word:
                     word_stack.append(word)
                     return word_stack
-                copy_stack = deepcopy(word_stack)
+                copy_stack = copy.deepcopy(word_stack)
                 copy_stack.append(word)
                 word_queue.append(copy_stack)
                 words.remove(word)
